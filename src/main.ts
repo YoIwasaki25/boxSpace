@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import '../scss/styles.scss';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { BloomEffect, EffectComposer, RenderPass } from 'postprocessing';
 
 window.addEventListener('DOMContentLoaded', () => {
     const cerestial = new Celestial();
@@ -10,13 +11,16 @@ window.addEventListener('DOMContentLoaded', () => {
 const CELESTIAL_PARAM = {
     clearColor: '#07001c',
 };
-
 export default class Celestial {
     private renderer: THREE.WebGLRenderer;
     private clearColor: THREE.Color;
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
     private controls: OrbitControls;
+    private composer: EffectComposer;
+    private renderPass: RenderPass;
+
+    //不要
     private geometry: THREE.BoxGeometry;
     private material: THREE.MeshNormalMaterial;
     private box: THREE.Mesh;
@@ -30,6 +34,9 @@ export default class Celestial {
         this.initScene();
         this.initCamera();
         this.initGeometry();
+		this.initPostProcessing();
+
+        window.addEventListener('resize', this.onResize);
     }
 
     initRenderer = () => {
@@ -71,9 +78,19 @@ export default class Celestial {
         this.controls.dampingFactor = 0.2;
     };
 
+    initPostProcessing = () => {
+        //composerにrendererを渡してあげる。
+        this.composer = new EffectComposer(this.renderer);
+        this.renderPass = new RenderPass(this.scene, this.camera);
+
+        this.composer.addPass(this.renderPass);
+    };
+
     initGeometry = () => {
         this.geometry = new THREE.BoxGeometry(250, 250, 250);
-        this.material = new THREE.MeshNormalMaterial();
+        this.material = new THREE.MeshNormalMaterial({
+            wireframe: true,
+        });
         this.box = new THREE.Mesh(this.geometry, this.material);
         this.box.position.z = -5;
         this.scene.add(this.box);
@@ -90,10 +107,13 @@ export default class Celestial {
         this.camera.updateMatrix();
 
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.composer.setSize(window.innerWidth, window.innerHeight);
     };
 
     animate = () => {
         requestAnimationFrame(this.animate);
-        this.renderer.render(this.scene, this.camera);
+        this.controls.update();
+        // this.renderer.render(this.scene, this.camera);
+        this.composer.render();
     };
 }

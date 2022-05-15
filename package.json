@@ -34,6 +34,7 @@
     "webpack-fix-style-only-entries": "^0.6.1"
   },
   "dependencies": {
+    "postprocessing": "^6.26.4",
     "three": "^0.140.2"
   }
 }
