@@ -11,22 +11,55 @@ const CELESTIAL_PARAM = {
 };
 
 export default class Celestial {
-    renderer;
+    private renderer: THREE.WebGLRenderer;
+    private clearColor: THREE.Color;
+	private scene: THREE.Scene;
+
     constructor() {
-        this.renderer = new THREE.WebGLRenderer();
+        this.onResize = this.onResize.bind(this);
+        this.initRenderer();
         this.init();
     }
+
+    initRenderer = () => {
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('myCanvas'),
+            powerPreference: 'high-performance',
+            antialias: false,
+            stencil: false,
+            depth: false,
+        });
+
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+        //background color
+        this.clearColor = new THREE.Color(CELESTIAL_PARAM.clearColor);
+        this.renderer.setClearColor(this.clearColor);
+
+        if (
+            this.renderer.capabilities.isWebGL2 == false &&
+            this.renderer.extensions.get('ANGLE_instanced_arrays') == null
+        ) {
+			document.getElementById("notSupported").style.display = "";
+			return false;
+        }
+    };
+
+	initScene = () => {
+		this.scene = new THREE.Scene();
+	}
+    onResize = () => {};
+
     init() {
         const width = 1600;
         const height = 1600;
 
-        // レンダラーを作成
-        // const renderer = new THREE.WebGLRenderer();
         // レンダラーのサイズを設定
-        this.renderer.setSize(width, height);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        // this.renderer.setSize(width, height);
+        // this.renderer.setPixelRatio(window.devicePixelRatio);
         // canvasをbodyに追加
-        document.body.appendChild(this.renderer.domElement);
+        // document.body.appendChild(this.renderer.domElement);
 
         // シーンを作成
         const scene = new THREE.Scene();
