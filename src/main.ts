@@ -1,5 +1,7 @@
 import * as THREE from 'three';
+import '../scss/styles.scss';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
 window.addEventListener('DOMContentLoaded', () => {
     const cerestial = new Celestial();
     cerestial.animate();
@@ -13,12 +15,12 @@ export default class Celestial {
     private renderer: THREE.WebGLRenderer;
     private clearColor: THREE.Color;
     private scene: THREE.Scene;
-    private camera: THREE.Camera;
+    private camera: THREE.PerspectiveCamera;
     private controls: OrbitControls;
-	private geometry: THREE.BoxGeometry;
-	private material: THREE.MeshNormalMaterial;
-	private box: THREE.Mesh;
-	private light: THREE.DirectionalLight;
+    private geometry: THREE.BoxGeometry;
+    private material: THREE.MeshNormalMaterial;
+    private box: THREE.Mesh;
+    private light: THREE.DirectionalLight;
 
     constructor() {
         this.onResize = this.onResize.bind(this);
@@ -27,7 +29,7 @@ export default class Celestial {
         this.initRenderer();
         this.initScene();
         this.initCamera();
-		this.initGeometry();
+        this.initGeometry();
     }
 
     initRenderer = () => {
@@ -82,7 +84,13 @@ export default class Celestial {
         this.scene.add(this.light);
     };
 
-    onResize = () => {};
+    onResize = () => {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        //Update local transform;
+        this.camera.updateMatrix();
+
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+    };
 
     animate = () => {
         requestAnimationFrame(this.animate);

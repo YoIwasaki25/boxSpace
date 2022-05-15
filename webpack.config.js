@@ -1,5 +1,8 @@
 const path = require('path');
 
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+
 module.exports = {
     //開発モードにする
     mode: 'development',
@@ -21,6 +24,10 @@ module.exports = {
                 test: /\.ts$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
+            },
+            {
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader'],
             },
             // Shaders
             {
