@@ -3,6 +3,8 @@ import { MathUtils } from 'three';
 import { defaultBlobOptions, maxParticlesCount } from './config';
 import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
+import Celestial from './main';
+import { Pane } from 'tweakpane';
 
 class Blob extends THREE.Object3D {
     options: any;
@@ -12,12 +14,11 @@ class Blob extends THREE.Object3D {
     private material: THREE.RawShaderMaterial;
     private mesh: THREE.Mesh;
 
-    private gui: any;
-	public isDead: boolean;
+    private gui: Pane;
+    public isDead: boolean;
 
     constructor(options: any) {
         super();
-
         this.options = { ...defaultBlobOptions, ...options };
 
         this.color1 = new THREE.Color(this.options.color1);
@@ -26,7 +27,7 @@ class Blob extends THREE.Object3D {
         this.initGeometry();
         this.initMaterial();
         this.initMesh();
-		this.initGUI(options.id);
+        this.initGUI(options.id);
     }
 
     initGeometry = () => {
@@ -42,10 +43,9 @@ class Blob extends THREE.Object3D {
         for (let i = 0; i < maxParticlesCount; i++) {
             const phi = THREE.MathUtils.randFloat(0, Math.PI);
             const theta = THREE.MathUtils.randFloat(0, Math.PI * 2);
-            translate.setFromSphericalCoords(0, phi, theta);
+            translate.setFromSphericalCoords(this.options.blobSize, phi, theta);
             translateArray.set([translate.x, translate.y, translate.z], translateAttributeSize * i);
         }
-
         this.geometry.instanceCount = this.options.particlesCount;
         this.geometry.setAttribute('translate', new THREE.InstancedBufferAttribute(translateArray, 3));
     };
@@ -85,7 +85,7 @@ class Blob extends THREE.Object3D {
 
     initMesh = () => {
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.scale.set(this.options.blobscale, this.options.blobscale, this.options.blobscale);
+        this.mesh.scale.set(this.options.blobScale, this.options.blobScale, this.options.blobScale);
         this.add(this.mesh);
     };
 
@@ -114,7 +114,7 @@ class Blob extends THREE.Object3D {
         });
 
         this.initGUITranslateNoise(this.gui);
-        this.initGUIParticlesScale(this.gui);
+        this.initGUIParticles(this.gui);
 
         this.gui
             .addButton({
@@ -152,12 +152,32 @@ class Blob extends THREE.Object3D {
         });
     };
 
+    initGUIParticles(root: any) {
+        const folder = root.addFolder({
+            title: 'Particles',
+            expanded: false,
+        });
+
+        folder
+            .addInput(this.options, 'particlesCount', {
+                label: 'count',
+                min: 0,
+                max: maxParticlesCount,
+            })
+            .on('change', (count: any) => {
+                this.geometry.instanceCount = count;
+            });
+
+        this.initGUIParticlesScale(folder);
+        this.initGUIParticlesColor(folder);
+        this.initGUIParticlesAlpha(folder);
+    }
+
     initGUIParticlesScale(root: any) {
         const scaleFolder = root.addFolder({
             title: 'Scale',
             expanded: false,
         });
-
         scaleFolder.addInput(this.material.uniforms.uScale, 'value', {
             label: 'scale',
             min: 0,

@@ -46,7 +46,7 @@ export default class Celestial {
         this.initRenderer();
         this.initScene();
         this.initCamera();
-        this.initGeometry();
+        // this.initGeometry();
         this.initPostProcessing();
         this.initGUI();
 
@@ -56,6 +56,8 @@ export default class Celestial {
         initialBlobs.forEach((options: any) => {
             this.addBlob(options);
         });
+
+		console.log(this.blobs);
     }
 
     initRenderer = () => {
@@ -165,9 +167,7 @@ export default class Celestial {
                 title: 'Add Blob',
             })
             .on('click', () => {
-                this.blobs.forEach((blob) => {
-                    blob.killBlob();
-                });
+				this.addBlob();
             });
 
         this.guiBlobFolder
@@ -204,7 +204,7 @@ export default class Celestial {
         this.composer.setSize(window.innerWidth, window.innerHeight);
     };
 
-    addBlob = (options: any) => {
+    addBlob = (options?: any) => {
         const blob = new Blob({
             gui: this.guiBlobFolder,
             id: this.blobs.length + 1,
