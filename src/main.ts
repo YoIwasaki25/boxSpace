@@ -26,7 +26,7 @@ export default class Celestial {
 
     private blobs: Blob[];
 
-    private gui: any;
+    private gui: Pane;
     private guiBlobFolder: any;
 
     private bloomEffect: BloomEffect;
@@ -53,7 +53,7 @@ export default class Celestial {
         window.addEventListener('resize', this.onResize);
 
         this.blobs = [];
-        initialBlobs.forEach((options) => {
+        initialBlobs.forEach((options: any) => {
             this.addBlob(options);
         });
     }
@@ -127,8 +127,9 @@ export default class Celestial {
                 label: 'background',
             })
             .on('change', (hex: any) => {
-                this.clearColor.set(hex);
+                this.clearColor.set(hex.value)
                 this.renderer.setClearColor(this.clearColor);
+                console.log(hex);
             });
 
         const fxFolder = this.gui.addFolder({
@@ -203,7 +204,7 @@ export default class Celestial {
         this.composer.setSize(window.innerWidth, window.innerHeight);
     };
 
-    addBlob(options: any) {
+    addBlob = (options: any) => {
         const blob = new Blob({
             gui: this.guiBlobFolder,
             id: this.blobs.length + 1,
@@ -212,7 +213,7 @@ export default class Celestial {
 
         this.scene.add(blob);
         this.blobs.push(blob);
-    }
+    };
 
     animate = () => {
         requestAnimationFrame(this.animate);
@@ -225,7 +226,5 @@ export default class Celestial {
             }
         });
         this.composer.render();
-
-		console.log(this.blobs.length);
     };
 }
