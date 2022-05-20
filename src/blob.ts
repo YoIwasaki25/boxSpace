@@ -152,7 +152,7 @@ class Blob extends THREE.Object3D {
         });
     };
 
-    initGUIParticles(root: any) {
+    initGUIParticles = (root: any) => {
         const folder = root.addFolder({
             title: 'Particles',
             expanded: false,
@@ -173,7 +173,7 @@ class Blob extends THREE.Object3D {
         this.initGUIParticlesAlpha(folder);
     }
 
-    initGUIParticlesScale(root: any) {
+    initGUIParticlesScale = (root: any) => {
         const scaleFolder = root.addFolder({
             title: 'Scale',
             expanded: false,
@@ -208,7 +208,7 @@ class Blob extends THREE.Object3D {
         });
     }
 
-    initGUIParticlesColor(root: any) {
+    initGUIParticlesColor = (root: any) => {
         const folder = root.addFolder({
             title: 'Color',
             expanded: false,
@@ -260,7 +260,7 @@ class Blob extends THREE.Object3D {
         });
     }
 
-    initGUIParticlesAlpha(root: any) {
+    initGUIParticlesAlpha = (root: any) => {
         const folder = root.addFolder({
             title: 'Alpha',
             expanded: false,
@@ -302,7 +302,7 @@ class Blob extends THREE.Object3D {
         });
     }
 
-    killBlob() {
+    killBlob = () => {
         this.gui.dispose();
         this.remove(this.mesh);
         this.geometry.dispose();
