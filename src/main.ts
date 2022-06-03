@@ -143,7 +143,6 @@ export default class Celestial {
             title: 'Bloom',
             expanded: false,
         });
-
         bloomFolder.addInput(this.bloomEffect, 'intensity', {
             min: 0,
             max: 5,
